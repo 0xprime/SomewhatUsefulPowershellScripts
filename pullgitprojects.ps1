@@ -9,7 +9,7 @@ Write-Host "> Git pulling projects in folder $path"
 
 foreach ($folder in $folders) 
 {
-    Write-Host "> Git Pulling project $folder.Name"
+    Write-Host "> Git Pulling project $folder"
     Set-Location ($path + "\" + $folder.Name)
     git pull
     #Set-Location ..
