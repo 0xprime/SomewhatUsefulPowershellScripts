@@ -1,21 +1,14 @@
 # This still in testing. 
 
 Param(
-    # (Parameter help description)
     [Parameter(Mandatory=$true, Position=0)]
     [ValidateSet("smtp","teams","slack")]
     [String[]]
     $alert,
-    # (Parameter help description)
-#    [Parameter(Position=0)]
     [String]
     $smtpFrom,
-    # (Parameter help description)
-#    [Parameter(Position=0)]
     [String]
     $smtpTo,
-    # Parameter help description
-#    [Parameter(AttributeValues)]
     [String]
     $smtpServer,
     [String]
@@ -23,7 +16,7 @@ Param(
 )
 
 $alertSubject = "Alert test"
-$alertBody = "<h1>This is an alert test.</h1>"
+$alertBody = "This is an alert test."
 
 switch ($alert){
     smtp {
@@ -49,5 +42,18 @@ switch ($alert){
     }
     slack {
         # Todo
+        if (!$webhook) {Write-Warning "> Cannot send alert, requires Webhook."; break}
+        $body = @{
+            'text'= $alertBody
+            'pretext' = $alertSubject
+            'color' = "warning"
+        }
+        $request = @{
+            Headers = @{'accept'='application/json'}
+            Body = $Body | convertto-json
+            Method = 'POST'
+            URI = $webhook 
+        }
+        Invoke-RestMethod @request
     }
 }
