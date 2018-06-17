@@ -1,9 +1,10 @@
 param 
 (
-    # Path to folder containing your projects, defaults to one level above script location.
-    [string]$path = ((Resolve-Path ..\).path),
     #Command to run, defaults to pull.
-    [string]$command = "pull"
+    [Parameter(Mandatory=$true, Position=0)]
+    [string]$command = "pull",
+    # Path to folder containing your projects, defaults to one level above script location.
+    [string]$path = ((Resolve-Path ..\).path)
 )
 
 $folders = Get-ChildItem -Directory $path
