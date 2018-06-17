@@ -10,7 +10,9 @@ Param(
     [String]
     $smtpServer,
     [String]
-    $webhook
+    $slackWebhook,
+    [String]
+    $teamsWebhook
 )
 
 $alertSubject = "Alert test"
@@ -29,7 +31,7 @@ switch ($alert){
     }
     teams {
         # Requires Teams Webhook.
-        if (!$webhook) {
+        if (!$teamsWebhook) {
             Write-Warning "> Cannot send alert, requires Webhook."
             break
         }
@@ -41,13 +43,13 @@ switch ($alert){
             Headers = @{'accept'='application/json'}
             Body = $data | ConvertTo-JSON
             Method = 'POST'
-            URI = $webhook 
+            URI = $teamsWebhook 
         }
         Invoke-RestMethod @request
     }
     slack {
         # Requires Slack webhook.
-        if (!$webhook) { 
+        if (!$slackWebhook) { 
             Write-Warning "> Cannot send alert, requires Webhook."
             break 
         }
@@ -61,7 +63,7 @@ switch ($alert){
             Headers = @{'accept'='application/json'}
             Body = $data | ConvertTo-JSON
             Method = 'POST'
-            URI = $webhook 
+            URI = $slackWebhook 
         }
         Invoke-RestMethod @request
     }
