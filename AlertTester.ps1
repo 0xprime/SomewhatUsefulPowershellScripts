@@ -1,6 +1,6 @@
 Param(
     [Parameter(Mandatory=$true, Position=0)]
-    [ValidateSet("smtp","teams","slack")]
+    [ValidateSet("smtp","teams","slack","stride")]
     [String[]]
     $alert,
     [String]
@@ -12,7 +12,11 @@ Param(
     [String]
     $slackWebhook,
     [String]
-    $teamsWebhook
+    $teamsWebhook,
+    [string]
+    $strideWebhook,
+    [string]
+    $strideAuthToken
 )
 
 $alertSubject = "Alert test"
@@ -64,6 +68,27 @@ switch ($alert){
             Body = $data | ConvertTo-JSON
             Method = 'POST'
             URI = $slackWebhook 
+        }
+        Invoke-RestMethod @request
+    }
+    stride {
+        # Requires Stride Webhook.
+        if ((!$strideWebhook) -and (!$strideAuthToken)) {
+            Write-Warning "> Cannot send alert, requires Webhook and AuthToken."
+            break
+        }
+        Write-Verbose "> Sending alert to Stride channel."
+        $data = "$alertSubject `n$alertBody" 
+        
+        $headers =@{
+            'Content-Type'='text/plain'
+            'Authorization' = "Bearer $strideAuthToken"
+        }
+        $request = @{
+            Headers = $headers
+            Body = $data 
+            Method = 'POST'
+            URI = $strideWebhook 
         }
         Invoke-RestMethod @request
     }

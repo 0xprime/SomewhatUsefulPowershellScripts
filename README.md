@@ -6,7 +6,7 @@ A script that tests various methods to send alerts or notifications to various c
 
 Todo:
 - Hipchat
-- Stride
+- ~~Stride~~
 - IRC
 
 Ideas more channels welcome. 
